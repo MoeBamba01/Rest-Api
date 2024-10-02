@@ -18,51 +18,52 @@ mongoose
     app.use(express.json());
 
 // GET route: Return all users
+// GET route: Fetch all users
 app.get('/users', async (req, res) => {
     try {
-    const users = await User.find();
-    res.json(users);
+        const users = await User.find();
+        res.json(users);
     } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-  // POST route: Add a new user to the database
+// POST route: Add a new user
 app.post('/users', async (req, res) => {
     try {
-    const { name, age } = req.body;
-    const user = new User({ name, age });
-    const savedUser = await user.save();
-    res.json(savedUser);
+        const { name, email, password } = req.body;
+        const user = new User({ name, email, password });
+        const savedUser = await user.save();
+        res.json(savedUser);
     } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-  // PUT route: Edit a user by ID
+// PUT route: Edit a user by ID
 app.put('/users/:id', async (req, res) => {
     try {
-    const { id } = req.params;
-    const { name, age } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(id, { name, age }, { new: true });
-    res.json(updatedUser);
+        const { id } = req.params;
+        const { name, email, password } = req.body;
+        const updatedUser = await User.findByIdAndUpdate(id, { name, email, password }, { new: true });
+        res.json(updatedUser);
     } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-  // DELETE route: Remove a user by ID
+// DELETE route: Remove a user by ID
 app.delete('/users/:id', async (req, res) => {
     try {
-    const { id } = req.params;
-    await User.findByIdAndRemove(id);
-    res.json({ message: 'User deleted successfully' });
+        const { id } = req.params;
+        await User.findByIdAndRemove(id);
+        res.json({ message: 'User deleted successfully' });
     } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 // Starting Server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-    });
+});
