@@ -11,7 +11,7 @@ const getAllUsers = async (req, res, next) => {
         const users = await User.find();
         res.json(users);
     } catch (error) {
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
@@ -24,17 +24,11 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
-        
-        // Basic validation
-        if (!name || !email || !password) {
-            return res.status(400).json({ error: 'Name, email, and password are required' });
-        }
-
         const user = new User({ name, email, password });
         const savedUser = await user.save();
         res.json(savedUser);
     } catch (error) {
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
@@ -48,20 +42,14 @@ const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, email, password } = req.body;
-        
         const updatedUser = await User.findByIdAndUpdate(
             id, 
             { name, email, password }, 
             { new: true }
         );
-        
-        if (!updatedUser) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
         res.json(updatedUser);
     } catch (error) {
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
@@ -74,15 +62,10 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const deletedUser = await User.findByIdAndRemove(id);
-        
-        if (!deletedUser) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
+        await User.findByIdAndRemove(id);
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
